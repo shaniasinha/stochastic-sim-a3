@@ -1,4 +1,5 @@
 from code.classes.board import Board
+import time
 import numpy as np
 import csv
 import os
@@ -56,6 +57,8 @@ class Solver:
         """
         print('=========Simulated Annealing started==========')
 
+        start_time = time.time() 
+
         current_distance = self.board.calculate_tour_distance()
         temperature = self.p.initial_temperature
 
@@ -90,6 +93,11 @@ class Solver:
                 self.all_acceptance_probs.append(acceptance_prob)
 
         self.board.order_tour()
+
+        end_time = time.time() 
+        elapsed_time = end_time - start_time
+        print(f"Simulation took {elapsed_time:.2f} seconds.")
+
 
         print("=========Simulated Annealing finished=========")
         print(self.board)

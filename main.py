@@ -14,22 +14,22 @@ if __name__ == '__main__':
     ################################################
 
     # parameters
-    params = AnnealingParameters(
-        problem_set = 'eil51',
+    params1 = AnnealingParameters(
+        problem_set = 'eli51',
         save_data = True,
-        folder_name = 'eil51_test1',
+        folder_name = 'eli51_test1',
         initial_temperature=30,
         cooling_rate=0.99,
         markov_chain_length=500,
-        num_markov_chains=1000
+        num_markov_chains=10
     )
 
     # create board and solve the problem
-    solver = Solver(params)
-    solver.simulated_annealing()
+    solver1 = Solver(params1)
+    solver1.simulated_annealing()
 
     # functions you can use after the solver is finished
-    visualizer = Visualizer(solver)
+    visualizer = Visualizer(solver=solver1)
     visualizer.plot_final_solution()
     visualizer.plot_summary()   
     visualizer.plot_animation()
