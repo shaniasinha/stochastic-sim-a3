@@ -15,7 +15,7 @@ if __name__ == '__main__':
 
     # parameters
     params1 = AnnealingParameters(
-        problem_set = 'eli51',
+        problem_set = 'a280',
         save_data = True,
         folder_name = 'eli51_test1',
         initial_temperature=30,
@@ -26,30 +26,32 @@ if __name__ == '__main__':
 
     # create board and solve the problem
     solver1 = Solver(params1)
-    solver1.simulated_annealing()
+    solver1.calculate_total_distance_optimal()
 
-    # functions you can use after the solver is finished
-    visualizer = Visualizer(solver=solver1)
-    visualizer.plot_final_solution()
-    visualizer.plot_summary()   
-    visualizer.plot_animation()
+    # solver1.simulated_annealing()
+
+    # # functions you can use after the solver is finished
+    # visualizer = Visualizer(solver=solver1)
+    # visualizer.plot_final_solution()
+    # visualizer.plot_summary()   
+    # visualizer.plot_animation()
     
-    ################################################
-    # Example of how to load the data from the csv files
-    ################################################
+    # ################################################
+    # # Example of how to load the data from the csv files
+    # ################################################
 
-    # Choose the folder name to read the data from
-    # Do not add additional parameters except problem_set and folder_name
-    params2 = AnnealingParameters(    
-        problem_set = 'eil51',
-        folder_name = 'eil51_test2',
-    )
+    # # Choose the folder name to read the data from
+    # # Do not add additional parameters except problem_set and folder_name
+    # params2 = AnnealingParameters(    
+    #     problem_set = 'eil51',
+    #     folder_name = 'eil51_test2',
+    # )
 
-    visualizer2 = Visualizer(params=params2)
-    visualizer2.plot_final_solution()
-    visualizer2.plot_summary()
-    visualizer2.plot_animation()
+    # visualizer2 = Visualizer(params=params2)
+    # visualizer2.plot_final_solution()
+    # visualizer2.plot_summary()
+    # visualizer2.plot_animation()
 
 
-    # You can also create 2 instances of the solver and compare the results, as the results are saved in each solver object
-    # Or create seperate functions to compare the stored csv data, in the file functions.py
+    # # You can also create 2 instances of the solver and compare the results, as the results are saved in each solver object
+    # # Or create seperate functions to compare the stored csv data, in the file functions.py

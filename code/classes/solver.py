@@ -141,3 +141,17 @@ class Solver:
         write_csv("all_acceptance_probs.csv", [[prob] for prob in self.all_acceptance_probs], params_header)
 
         print(f"Data saved to folder: {folder_path}")
+
+    def calculate_total_distance(self):
+        """
+        Calculate the total distance of the current tour.
+        post:
+        - Prints the total distance of the current tour.
+        """
+        print(f"Total distance: {self.board.calculate_tour_distance()}")
+
+    def calculate_total_distance_optimal(self):
+        """
+        Calculate the total distance of the optimal tour.
+        """
+        print(f"Optimal distance: {self.board.calculate_tour_solution_distance()}")

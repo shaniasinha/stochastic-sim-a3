@@ -28,8 +28,8 @@ class Board:
         if self.problem_set not in {'eil51', 'a280', 'pcb442'}:
             raise ValueError('Invalid problem set: choose eil51, a280 or pcb442')
         
-        self.tour_solution: List[int] = self.read_solution()
         self.tour_order: List[Node] = self.read_nodes()
+        self.tour_solution: List[Node] = self.read_solution()
         self.tour_distance = self.calculate_tour_distance()
 
     def read_nodes(self) -> List[Node]:
@@ -66,18 +66,19 @@ class Board:
         
         return nodes
 
-    def read_solution(self) -> List[int]:
+
+    def read_solution(self) -> List[Node]:
         """
         Read the optimal tour solution from the TSP configuration file.
         pre:
         - The file path corresponding to the problem_set must exist and contain valid solution data.
         post:
-        - Returns a list of node IDs representing the optimal tour solution.
+        - Returns a list of Node objects representing the optimal tour solution.
         - Raises ValueError if the number of nodes does not match the dimension.
         """
         path = os.path.join(os.path.dirname(__file__), '../..', 'TSP-Configurations', f'{self.problem_set}.opt.tour.txt')
         dimension = 0
-        correct_order = []
+        solution_order = []
         start_processing = False
         with open(path) as f:
             lines = f.readlines()
@@ -93,12 +94,13 @@ class Board:
                     if line.startswith('-1'):
                         break
                     node = line.strip().split()
-                    correct_order.append(int(node[0]))
+                    solution_order.append(int(node[0]))
 
-        if len(correct_order) != dimension:
+        if len(solution_order) != dimension:
             raise ValueError('Number of nodes does not match dimension')
-        
-        return correct_order
+
+        id_to_node = {node.ID: node for node in self.tour_order}
+        return [id_to_node[node_id] for node_id in solution_order]
 
     def swap_edges(self, index1: int, index2: int):
         """
@@ -162,3 +164,16 @@ class Board:
         tour_order = ', '.join(str(node.ID) for node in self.tour_order)
         tour_distance = self.calculate_tour_distance()
         return f'Tour order: {tour_order}\nTotal distance: {tour_distance}'
+
+    def calculate_tour_solution_distance(self) -> float:
+        """
+        Calculate the total distance of the optimal tour solution, forming a closed loop.
+        pre:
+        - tour_solution must contain a valid sequence of Node instances.
+        post:
+        - Returns the total distance of the optimal tour solution as a float.
+        """
+        return sum(
+            self._distance(self.tour_solution[i], self.tour_solution[(i + 1) % len(self.tour_solution)])
+            for i in range(len(self.tour_solution))
+        )
