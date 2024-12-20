@@ -8,50 +8,87 @@ from code.functions import * # Feel free to add functions within this file
 
 np.random.seed(50)
 
+# for i in range(10):
+#     if __name__ == '__main__':
+
+#         ################################################
+#         # Example of how to run the solver and visualizer
+#         ################################################
+
+#         #parameters
+#         params1 = AnnealingParameters(
+#             problem_set='a280',
+#             save_data=True,
+#             folder_name= f'Lin_{i}',
+#             initial_temperature=150,
+#             cooling_rate=0.5,
+#             markov_chain_length=150,
+#             num_markov_chains=1000,
+#         )
+
+#         # create board and solve the problem
+#         solver1 = Solver(params1)
+#         solver1.simulated_annealing_lin_cool()
+
+#         # functions you can use after the solver is finished
+#         visualizer = Visualizer(solver=solver1)
+#         visualizer.plot_final_solution()
+#         visualizer.plot_summary() 
+#         #visualizer.plot_animation() this gives an annimation 
+
+# iteration = np.linspace(10,150,15, dtype=int)
+# for i in iteration:
+#     if __name__ == '__main__':
+
+#         ################################################
+#         # Example of how to run the solver and visualizer
+#         ################################################
+
+#         #parameters
+#         params1 = AnnealingParameters(
+#             problem_set='a280',
+#             save_data=True,
+#             folder_name= f'Length_{i}',
+#             initial_temperature=150,
+#             cooling_rate=0.5,
+#             markov_chain_length=i,
+#             num_markov_chains=1000,
+#         )
+
+#         # create board and solve the problem
+#         solver1 = Solver(params1)
+#         solver1.simulated_annealing_log_cool()
+
+#         # functions you can use after the solver is finished
+#         visualizer = Visualizer(solver=solver1)
+#         visualizer.plot_final_solution()
+#         visualizer.plot_summary() 
+#         #visualizer.plot_animation() this gives an annimation 
+
+
 if __name__ == '__main__':
 
-    ################################################
-    # Example of how to run the solver and visualizer
-    ################################################
+        ################################################
+        # Example of how to run the solver and visualizer
+        ################################################
 
     #parameters
     params1 = AnnealingParameters(
-        problem_set='eil51',
+        problem_set='a280',
         save_data=True,
-        folder_name='eli51_test25_exp_round',
-        initial_temperature=60,
-        cooling_rate=0.99,
-        markov_chain_length=5000,
-        num_markov_chains=500,
+        folder_name= "Aim_for_the_best",
+        initial_temperature=150,
+        cooling_rate=0.5,
+        markov_chain_length=500,
+        num_markov_chains=1500,
     )
 
     # create board and solve the problem
     solver1 = Solver(params1)
-    solver1.simulated_annealing_exp_cooling()
+    solver1.simulated_annealing_log_cool()
 
-    # functions you can use after the solver is finished
+        # functions you can use after the solver is finished
     visualizer = Visualizer(solver=solver1)
     visualizer.plot_final_solution()
-    #visualizer.plot_summary() 
-    #visualizer.plot_animation() this gives an annimation 
-    
-    # ################################################
-    # # Example of how to load the data from the csv files
-    # ################################################
-
-    # # Choose the folder name to read the data from
-    # # Do not add additional parameters except problem_set and folder_name
-    # params2 = AnnealingParameters(    
-    #     problem_set = 'eil51',
-    #     folder_name = 'eil51_test2',
-    # )
-
-    # visualizer2 = Visualizer(params=params2)
-    # visualizer2.plot_final_solution()
-    # visualizer2.plot_summary()
-    # visualizer2.plot_animation()
-
-
-    # You can also create 2 instances of the solver and compare the results, as the results are saved in each solver object
-    # Or create seperate functions to compare the stored csv data, in the file functions.py
-
+    visualizer.tour_length() 
+        #visualizer.plot_animation() this gives an annimation 
