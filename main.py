@@ -12,44 +12,6 @@ np.random.seed(50)
 
 if __name__ == '__main__':
 
-    # # parameters for the best found solution of a280
-    # params_best1 = AnnealingParameters(
-    #     problem_set='a280',
-    #     save_data=True,
-    #     folder_name= "a280_best",
-    #     initial_temperature=150,
-    #     cooling_rate=0.5,
-    #     markov_chain_length=10,
-    #     num_markov_chains=10,
-    # )
-
-    # solver_best1 = Solver(params_best1)
-    # solver_best1.simulated_annealing_log_cool()
-
-    # visualizer_best1 = Visualizer(solver=solver_best1)
-    # visualizer_best1.plot_final_solution()
-    # visualizer_best1.plot_tour_length()
-
-
-    # # parameters for the best found solution of a280
-    # params_best2 = AnnealingParameters(
-    #     problem_set='pcb442',
-    #     save_data=True,
-    #     folder_name= "pcb442_best",
-    #     initial_temperature=60,
-    #     cooling_rate=0.99,
-    #     markov_chain_length=10,
-    #     num_markov_chains=10,
-    # )
-
-    # solver_best2 = Solver(params_best2)
-    # solver_best2.simulated_annealing_log_cool()
-
-    # visualizer_best2 = Visualizer(solver=solver_best2)
-    # visualizer_best2.plot_final_solution()
-    # visualizer_best2.plot_tour_length()
-
-
     """
     Parameters for the best found solution of a280 and pcb442
     """
