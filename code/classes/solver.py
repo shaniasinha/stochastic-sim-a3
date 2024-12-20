@@ -3,8 +3,6 @@ import time
 import numpy as np
 import csv
 import os
-from code.functions import *
-
 
 class Solver:
     def __init__(self, params):
@@ -19,7 +17,6 @@ class Solver:
         self.board = Board(params)
         self.p = params
 
-        # Saved parameters for plotting
         self.all_tours = []
         self.all_lengths = []
         self.all_temperatures = []
@@ -86,7 +83,6 @@ class Solver:
                     else:
                         self.board.tour_order = previous_tour[:]
 
-                # Save current state for visualization
                 self.board.order_tour()
                 self.all_tours.append(self.board.tour_order[:])
                 self.all_lengths.append(current_distance)
@@ -126,7 +122,7 @@ class Solver:
         initial_temperature = self.p.initial_temperature
 
         for i in range(self.p.num_markov_chains):
-            temperature = logarithmic_cooling(initial_temperature, 10, i)
+            temperature = self.logarithmic_cooling(initial_temperature, 10, i)
 
             for j in range(self.p.markov_chain_length):
                 previous_tour = self.board.tour_order[:]
@@ -189,7 +185,7 @@ class Solver:
         initial_temperature = self.p.initial_temperature
 
         for i in range(self.p.num_markov_chains):
-            temperature = linear_cooling(initial_temperature,self.p.cooling_rate, i)
+            temperature = self.linear_cooling(initial_temperature,self.p.cooling_rate, i)
 
             for j in range(self.p.markov_chain_length):
                 previous_tour = self.board.tour_order[:]
@@ -268,3 +264,31 @@ class Solver:
         write_csv("all_acceptance_probs.csv", [[prob] for prob in self.all_acceptance_probs], params_header)
 
         print(f"Data saved to folder: {folder_path}")
+
+    def logarithmic_cooling(self, t_initial, beta, i):
+        """
+        Cooling in accordance with logarithmic schedule.
+        pre:
+            T_initial (float): The initial temperature.
+            beta (float): Cooling rate constant.
+            k (int): Current iteration number.
+        post:
+            float: Updated temperature.
+        """
+        if i == 0:
+            return t_initial
+        return t_initial / (1 + beta * np.log(1 + i))
+
+    def linear_cooling(self, t_initial, cooling_rate , i):
+        """
+        Cooling in accordance with linear schedule.
+        pre:
+            T_current (float): Current temperature.
+            Cooling (float): Cooling rate given. 
+            k (int): Current iteration number.  
+        post:
+            float: Updated temperature.
+        """
+        return max(0.1, t_initial - cooling_rate * i)
+
+

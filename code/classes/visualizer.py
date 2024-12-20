@@ -4,6 +4,11 @@ from code.classes.board import Board
 import numpy as np
 import os
 import csv
+from matplotlib import rcParams
+
+rcParams.update({
+    'font.size': 15,
+})
 
 class Visualizer:
     def __init__(self, solver = None, params = None):
@@ -70,36 +75,33 @@ class Visualizer:
 
 
     def plot_final_solution(self):
+        """
+        Plot the final TSP solution, comparing it to the target solution.
+        """
         x_final = [node.x for node in self.all_tours[-1]] + [self.all_tours[-1][0].x]
         y_final = [node.y for node in self.all_tours[-1]] + [self.all_tours[-1][0].y]
 
-        solution_nodes = [next(node for node in self.all_tours[-1] if node.ID == ID) for ID in self.board.tour_solution]
-        x_solution = [node.x for node in solution_nodes] + [solution_nodes[0].x]
-        y_solution = [node.y for node in solution_nodes] + [solution_nodes[0].y]
+        x_solution = [node.x for node in self.board.tour_solution] + [self.board.tour_solution[0].x]
+        y_solution = [node.y for node in self.board.tour_solution] + [self.board.tour_solution[0].y]
 
         fig, ax = plt.subplots(figsize=(8, 8))
-        ax.plot(x_final, y_final, 'o-', color='black', markersize=6, label="Final Tour Path", linewidth=2, alpha=0.7)
         ax.plot(x_solution, y_solution, 'o--', color='red', markersize=6, label="Target Solution Path")
+        ax.plot(x_final, y_final, 'o-', color='blue', markersize=6, label="Final Tour Path", linewidth=2, alpha=0.5)
+        
 
+        # Optional: Adjust or remove node ID labels
         for node in self.all_tours[-1]:
             ax.text(
-                node.x, node.y, str(node.ID),
-                color='white', fontsize=5, ha='center', va='center',
+                node.x, node.y, "",  # Change "" to `str(node.ID)` to display smaller node IDs.
+                color='white', fontsize=4, ha='center', va='center',  # Adjust font size here
                 bbox=dict(boxstyle='circle', facecolor='black', pad=0.3)
             )
-
-        ax.text(
-            0.5, 1.05, f"Final Length: {self.all_lengths[-1]:.2f}",
-            transform=ax.transAxes, fontsize=12, color='blue', ha='center',
-            bbox=dict(boxstyle='round', facecolor='lightgrey', edgecolor='blue')
-        )
 
         ax.set_title("TSP Tour: Final vs Target Solution")
         ax.set_xlabel("X")
         ax.set_ylabel("Y")
         plt.legend()
 
-                
         if self.p.save_data:
             folder_path = os.path.abspath(os.path.join("output", self.p.folder_name))
             os.makedirs(folder_path, exist_ok=True)
@@ -108,10 +110,10 @@ class Visualizer:
 
         plt.show()
 
+
     def plot_animation(self, target_frames=1000):
         """
         Animate the TSP solution evolution, downsampling frames to ensure a maximum of `target_frames`.
-
         :param target_frames: The target number of frames to display in the animation.
         """
         fig, ax = plt.subplots(figsize=(8, 8))
@@ -170,56 +172,9 @@ class Visualizer:
         - Acceptance probabilities over time
         - Final tour solution
         """
-        # Create a 2x2 grid of subplots
-<<<<<<< HEAD
-        fig, axs = plt.subplots(2, 2, figsize=(12, 10))
-        fig.tight_layout(pad=5)
-        
-        # Plot tour lengths over time
-        axs[0, 0].plot(self.all_lengths, color='blue', label="Tour Length")
-        axs[0, 0].set_title("Tour Lengths Over Time")
-        axs[0, 0].set_xlabel("Iteration")
-        axs[0, 0].set_ylabel("Tour Length")
-        axs[0, 0].legend()
-        axs[0, 0].grid(True)
-
-        # Plot temperatures over time
-        axs[0, 1].plot(self.all_temperatures, color='red', label="Temperature")
-        axs[0, 1].set_title("Temperatures Over Time")
-        axs[0, 1].set_xlabel("Iteration")
-        axs[0, 1].set_ylabel("Temperature")
-        axs[0, 1].legend()
-        axs[0, 1].grid(True)
-
-        # Plot acceptance probabilities over time
-        axs[1, 0].scatter(range(len(self.all_acceptance_probs)), self.all_acceptance_probs, 
-                        color='green', s=10, label="Acceptance Probability")
-        axs[1, 0].set_title("Acceptance Probabilities Over Time")
-        axs[1, 0].set_xlabel("Iteration")
-        axs[1, 0].set_ylabel("Probability")
-        axs[1, 0].legend()
-        axs[1, 0].grid(True)
-
-        # Plot the final solution
-        final_tour = self.all_tours[-1]
-        x = [node.x for node in final_tour] + [final_tour[0].x]
-        y = [node.y for node in final_tour] + [final_tour[0].y]
-        axs[1, 1].plot(x, y, 'o-', color='black', markersize=6, linewidth=2, alpha=0.7)
-        axs[1, 1].set_title("Final Tour Solution")
-        axs[1, 1].set_xlabel("X")
-        axs[1, 1].set_ylabel("Y")
-        for node in final_tour:
-            axs[1, 1].text(
-                node.x, node.y, str(node.ID),
-                color='white', fontsize=8, ha='center', va='center',
-                bbox=dict(boxstyle='circle', facecolor='black', pad=0.3)
-            )
-        axs[1, 1].grid(True)
-=======
         fig, axs = plt.subplots(1, 2, figsize=(12, 10))
         fig.tight_layout(pad=5)
         
-        # Plot tour lengths over time
         axs[0].plot(self.all_lengths, color='blue', label="Tour Length")
         axs[0].set_title("Tour Lengths Over Time")
         axs[0].set_xlabel("Iteration")
@@ -227,39 +182,12 @@ class Visualizer:
         axs[0].legend()
         axs[0].grid(True)
 
-        # Plot temperatures over time
         axs[1].plot(self.all_temperatures, color='red', label="Temperature")
         axs[1].set_title("Temperatures Over Time")
         axs[1].set_xlabel("Iteration")
         axs[1].set_ylabel("Temperature")
         axs[1].legend()
         axs[1].grid(True)
-
-        # Plot acceptance probabilities over time
-        # axs[1, 0].scatter(range(len(self.all_acceptance_probs)), self.all_acceptance_probs, 
-        #                 color='green', s=10, label="Acceptance Probability")
-        # axs[1, 0].set_title("Acceptance Probabilities Over Time")
-        # axs[1, 0].set_xlabel("Iteration")
-        # axs[1, 0].set_ylabel("Probability")
-        # axs[1, 0].legend()
-        # axs[1, 0].grid(True)
-
-        # Plot the final solution
-        # final_tour = self.all_tours[-1]
-        # x = [node.x for node in final_tour] + [final_tour[0].x]
-        # y = [node.y for node in final_tour] + [final_tour[0].y]
-        # axs[1, 1].plot(x, y, 'o-', color='black', markersize=6, linewidth=2, alpha=0.7)
-        # axs[1, 1].set_title("Final Tour Solution")
-        # axs[1, 1].set_xlabel("X")
-        # axs[1, 1].set_ylabel("Y")
-        # for node in final_tour:
-        #     axs[1, 1].text(
-        #         node.x, node.y, str(node.ID),
-        #         color='white', fontsize=8, ha='center', va='center',
-        #         bbox=dict(boxstyle='circle', facecolor='black', pad=0.3)
-        #     )
-        # axs[1, 1].grid(True)
->>>>>>> origin/karolina_updated
         
         if self.p.save_data:
             folder_path = os.path.abspath(os.path.join("output", self.p.folder_name))
@@ -269,9 +197,10 @@ class Visualizer:
 
         plt.show()
 
-<<<<<<< HEAD
-=======
-    def tour_length(self):
+    def plot_tour_length(self):
+        """
+        Plot the tour lengths over time.
+        """
         fig, ax = plt.subplots(figsize=(8, 8))
         ax.plot(self.all_lengths, color='blue', label="Tour Length")
         ax.set_title("Tour Lengths Over Time")
@@ -288,4 +217,3 @@ class Visualizer:
 
         plt.show()
 
->>>>>>> origin/karolina_updated
