@@ -30,8 +30,12 @@ if __name__ == '__main__':
     solver_best1 = Solver(params_best1)
     solver_best1.simulated_annealing_log_cool()
 
+    visualizer_best1 = Visualizer(solver=solver_best1)
+    visualizer_best1.plot_final_solution()
+    visualizer_best1.plot_tour_length()
 
-    # parameters for the best found solution of a280
+
+    # parameters for the best found solution of pcb442
     params_best2 = AnnealingParameters(
         problem_set='pcb442',
         save_data=True,
@@ -44,6 +48,10 @@ if __name__ == '__main__':
 
     solver_best2 = Solver(params_best2)
     solver_best2.simulated_annealing_log_cool()
+
+    visualizer_best2 = Visualizer(solver=solver_best2)
+    visualizer_best2.plot_final_solution()
+    visualizer_best2.plot_tour_length()
 
     """
     Showing temperature change of different couling schedules
