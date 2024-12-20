@@ -1,5 +1,6 @@
 import os
 import math as m
+import numpy as np
 from typing import List
 
 
@@ -28,8 +29,8 @@ class Board:
         if self.problem_set not in {'eil51', 'a280', 'pcb442'}:
             raise ValueError('Invalid problem set: choose eil51, a280 or pcb442')
         
+        self.tour_solution: List[int] = self.read_solution()
         self.tour_order: List[Node] = self.read_nodes()
-        self.tour_solution: List[Node] = self.read_solution()
         self.tour_distance = self.calculate_tour_distance()
 
     def read_nodes(self) -> List[Node]:
@@ -66,19 +67,18 @@ class Board:
         
         return nodes
 
-
-    def read_solution(self) -> List[Node]:
+    def read_solution(self) -> List[int]:
         """
         Read the optimal tour solution from the TSP configuration file.
         pre:
         - The file path corresponding to the problem_set must exist and contain valid solution data.
         post:
-        - Returns a list of Node objects representing the optimal tour solution.
+        - Returns a list of node IDs representing the optimal tour solution.
         - Raises ValueError if the number of nodes does not match the dimension.
         """
         path = os.path.join(os.path.dirname(__file__), '../..', 'TSP-Configurations', f'{self.problem_set}.opt.tour.txt')
         dimension = 0
-        solution_order = []
+        correct_order = []
         start_processing = False
         with open(path) as f:
             lines = f.readlines()
@@ -94,28 +94,35 @@ class Board:
                     if line.startswith('-1'):
                         break
                     node = line.strip().split()
-                    solution_order.append(int(node[0]))
+                    correct_order.append(int(node[0]))
 
-        if len(solution_order) != dimension:
+        if len(correct_order) != dimension:
             raise ValueError('Number of nodes does not match dimension')
-
-        id_to_node = {node.ID: node for node in self.tour_order}
-        return [id_to_node[node_id] for node_id in solution_order]
-
-    def swap_edges(self, index1: int, index2: int):
+        
+        return correct_order
+    
+    def two_opt_swap(self, index1: int, index2: int):
         """
-        Swaps the edges between two non-adjacent nodes and reverses the order of the nodes in between.
+        Performs a 2-opt swap between two non-adjacent nodes in the tour by reversing the order of the nodes
+        between index1 and index2. This eliminates edge crossings and potentially reduces the total distance.
+        
         pre:
         - index1 and index2 must be valid indices in the tour_order list.
         - Nodes at index1 and index2 must not be adjacent or form a direct loop edge.
         post:
-        - The sub-tour between index1 and index2 is reversed.
+        - The sub-tour between index1 and index2 is reversed (2-opt).
         - Raises ValueError if nodes are adjacent or form a direct loop edge.
         """
-        if abs(index1 - index2) == 1 or abs(index1 - index2) == len(self.tour_order) - 2:
+        if abs(index1 - index2) == 1 or abs(index1 - index2) == len(self.tour_order) - 1:
             raise ValueError('Nodes are adjacent or form a direct loop edge')
         
+        # Ensure index1 is smaller than index2 for consistency in slicing
+        if index1 > index2:
+            index1, index2 = index2, index1
+        
+        # Reverse the segment between index1 and index2 (2-opt swap)
         self.tour_order[index1:index2 + 1] = reversed(self.tour_order[index1:index2 + 1])
+
 
     def order_tour(self):
         """
@@ -138,7 +145,9 @@ class Board:
         """
         x1, y1 = Node1.x, Node1.y
         x2, y2 = Node2.x, Node2.y
-        return m.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+        distance = m.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+        distance_rounded = np.round(distance)
+        return distance
 
     def calculate_tour_distance(self) -> float:
         """
@@ -164,16 +173,3 @@ class Board:
         tour_order = ', '.join(str(node.ID) for node in self.tour_order)
         tour_distance = self.calculate_tour_distance()
         return f'Tour order: {tour_order}\nTotal distance: {tour_distance}'
-
-    def calculate_tour_solution_distance(self) -> float:
-        """
-        Calculate the total distance of the optimal tour solution, forming a closed loop.
-        pre:
-        - tour_solution must contain a valid sequence of Node instances.
-        post:
-        - Returns the total distance of the optimal tour solution as a float.
-        """
-        return sum(
-            self._distance(self.tour_solution[i], self.tour_solution[(i + 1) % len(self.tour_solution)])
-            for i in range(len(self.tour_solution))
-        )

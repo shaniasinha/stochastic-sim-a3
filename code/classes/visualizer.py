@@ -171,6 +171,7 @@ class Visualizer:
         - Final tour solution
         """
         # Create a 2x2 grid of subplots
+<<<<<<< HEAD
         fig, axs = plt.subplots(2, 2, figsize=(12, 10))
         fig.tight_layout(pad=5)
         
@@ -214,6 +215,51 @@ class Visualizer:
                 bbox=dict(boxstyle='circle', facecolor='black', pad=0.3)
             )
         axs[1, 1].grid(True)
+=======
+        fig, axs = plt.subplots(1, 2, figsize=(12, 10))
+        fig.tight_layout(pad=5)
+        
+        # Plot tour lengths over time
+        axs[0].plot(self.all_lengths, color='blue', label="Tour Length")
+        axs[0].set_title("Tour Lengths Over Time")
+        axs[0].set_xlabel("Iteration")
+        axs[0].set_ylabel("Tour Length")
+        axs[0].legend()
+        axs[0].grid(True)
+
+        # Plot temperatures over time
+        axs[1].plot(self.all_temperatures, color='red', label="Temperature")
+        axs[1].set_title("Temperatures Over Time")
+        axs[1].set_xlabel("Iteration")
+        axs[1].set_ylabel("Temperature")
+        axs[1].legend()
+        axs[1].grid(True)
+
+        # Plot acceptance probabilities over time
+        # axs[1, 0].scatter(range(len(self.all_acceptance_probs)), self.all_acceptance_probs, 
+        #                 color='green', s=10, label="Acceptance Probability")
+        # axs[1, 0].set_title("Acceptance Probabilities Over Time")
+        # axs[1, 0].set_xlabel("Iteration")
+        # axs[1, 0].set_ylabel("Probability")
+        # axs[1, 0].legend()
+        # axs[1, 0].grid(True)
+
+        # Plot the final solution
+        # final_tour = self.all_tours[-1]
+        # x = [node.x for node in final_tour] + [final_tour[0].x]
+        # y = [node.y for node in final_tour] + [final_tour[0].y]
+        # axs[1, 1].plot(x, y, 'o-', color='black', markersize=6, linewidth=2, alpha=0.7)
+        # axs[1, 1].set_title("Final Tour Solution")
+        # axs[1, 1].set_xlabel("X")
+        # axs[1, 1].set_ylabel("Y")
+        # for node in final_tour:
+        #     axs[1, 1].text(
+        #         node.x, node.y, str(node.ID),
+        #         color='white', fontsize=8, ha='center', va='center',
+        #         bbox=dict(boxstyle='circle', facecolor='black', pad=0.3)
+        #     )
+        # axs[1, 1].grid(True)
+>>>>>>> origin/karolina_updated
         
         if self.p.save_data:
             folder_path = os.path.abspath(os.path.join("output", self.p.folder_name))
@@ -223,3 +269,23 @@ class Visualizer:
 
         plt.show()
 
+<<<<<<< HEAD
+=======
+    def tour_length(self):
+        fig, ax = plt.subplots(figsize=(8, 8))
+        ax.plot(self.all_lengths, color='blue', label="Tour Length")
+        ax.set_title("Tour Lengths Over Time")
+        ax.set_xlabel("Iteration")
+        ax.set_ylabel("Tour Length")
+        ax.legend()
+        ax.grid(True)
+
+        if self.p.save_data:
+            folder_path = os.path.abspath(os.path.join("output", self.p.folder_name))
+            os.makedirs(folder_path, exist_ok=True)
+            plt.savefig(f"output/{self.p.folder_name}/summary.png")
+            print(f"Summary plot saved {folder_path} as summary.png")
+
+        plt.show()
+
+>>>>>>> origin/karolina_updated

@@ -1,0 +1,1 @@
+Problem Set: eil51, Initial Temperature: 60, Cooling Rate: 0.99, Markov Chain Length: 5000, Number of Markov Chains: 500, Beta = 11

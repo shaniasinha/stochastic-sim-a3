@@ -3,6 +3,7 @@ import time
 import numpy as np
 import csv
 import os
+from code.functions import *
 
 
 class Solver:
@@ -44,7 +45,7 @@ class Solver:
             print(f"Tour: {tour}")
             print(f"Tour length: {self.board.calculate_tour_distance()}")
 
-    def simulated_annealing(self):
+    def simulated_annealing_exp_cooling(self):
         """
         Perform simulated annealing to solve the travelling salesman problem.
         pre:
@@ -69,10 +70,10 @@ class Solver:
                 previous_tour = self.board.tour_order[:]
 
                 index1, index2 = np.random.randint(0, len(self.board.tour_order), 2)
-                while abs(index1 - index2) == 1 or abs(index1 - index2) == len(self.board.tour_order) - 2:
+                while index1 == index2 or abs(index1 - index2) == 1 or abs(index1 - index2) == len(self.board.tour_order) - 1:
                     index1, index2 = np.random.randint(0, len(self.board.tour_order), 2)
 
-                self.board.swap_edges(index1, index2)
+                self.board.two_opt_swap(index1, index2)
                 new_distance = self.board.calculate_tour_distance()
                 delta = new_distance - current_distance
                 acceptance_prob = np.exp(-delta / temperature) if delta > 0 else 1
@@ -104,6 +105,132 @@ class Solver:
 
         if self.p.save_data:
             self._save_data()
+
+    def simulated_annealing_log_cool(self):
+        """
+        Perform simulated annealing to solve the travelling salesman problem using the 2-opt swap.
+        pre:
+        - self.p must include valid attributes for initial_temperature, cooling_rate, 
+        markov_chain_length, num_markov_chains, and save_data options.
+        - Board instance must be initialized with a valid tour and nodes.
+        post:
+        - Performs simulated annealing to find an optimized tour.
+        - Saves intermediate states for visualization and optionally saves results to CSV files.
+        """
+        print('=========Simulated Annealing started==========')
+
+        start_time = time.time()
+
+        current_distance = self.board.calculate_tour_distance()
+
+        initial_temperature = self.p.initial_temperature
+
+        for i in range(self.p.num_markov_chains):
+            temperature = logarithmic_cooling(initial_temperature, 10, i)
+
+            for j in range(self.p.markov_chain_length):
+                previous_tour = self.board.tour_order[:]
+
+                # Select two non-adjacent cities (index1, index2) for the 2-opt swap
+                index1, index2 = np.random.randint(0, len(self.board.tour_order), 2)
+                while index1 == index2 or abs(index1 - index2) == 1 or abs(index1 - index2) == len(self.board.tour_order) - 1:
+                    index1, index2 = np.random.randint(0, len(self.board.tour_order), 2)
+
+                # Perform the 2-opt swap between the selected cities
+                self.board.two_opt_swap(index1, index2)
+                new_distance = self.board.calculate_tour_distance()
+                delta = new_distance - current_distance
+                acceptance_prob = np.exp(-delta / temperature) if delta > 0 else 1
+
+                if delta < 0:
+                    current_distance = new_distance
+                else:
+                    if np.random.rand() < acceptance_prob:
+                        current_distance = new_distance
+                    else:
+                        self.board.tour_order = previous_tour[:]
+
+                # Save current state for visualization
+                self.board.order_tour()
+                self.all_tours.append(self.board.tour_order[:])
+                self.all_lengths.append(current_distance)
+                self.all_temperatures.append(temperature)
+                self.all_acceptance_probs.append(acceptance_prob)
+
+        self.board.order_tour()
+
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        print(f"Simulation took {elapsed_time:.2f} seconds.")
+
+        print("=========Simulated Annealing finished=========")
+        print(self.board)
+
+        if self.p.save_data:
+            self._save_data()
+
+    def simulated_annealing_lin_cool(self):
+        """
+        Perform simulated annealing to solve the travelling salesman problem using the 2-opt swap.
+        pre:
+        - self.p must include valid attributes for initial_temperature, cooling_rate, 
+        markov_chain_length, num_markov_chains, and save_data options.
+        - Board instance must be initialized with a valid tour and nodes.
+        post:
+        - Performs simulated annealing to find an optimized tour.
+        - Saves intermediate states for visualization and optionally saves results to CSV files.
+        """
+        print('=========Simulated Annealing started==========')
+
+        start_time = time.time()
+
+        current_distance = self.board.calculate_tour_distance()
+
+        initial_temperature = self.p.initial_temperature
+
+        for i in range(self.p.num_markov_chains):
+            temperature = linear_cooling(initial_temperature,self.p.cooling_rate, i)
+
+            for j in range(self.p.markov_chain_length):
+                previous_tour = self.board.tour_order[:]
+
+                # Select two non-adjacent cities (index1, index2) for the 2-opt swap
+                index1, index2 = np.random.randint(0, len(self.board.tour_order), 2)
+                while index1 == index2 or abs(index1 - index2) == 1 or abs(index1 - index2) == len(self.board.tour_order) - 1:
+                    index1, index2 = np.random.randint(0, len(self.board.tour_order), 2)
+
+                # Perform the 2-opt swap between the selected cities
+                self.board.two_opt_swap(index1, index2)
+                new_distance = self.board.calculate_tour_distance()
+                delta = new_distance - current_distance
+                acceptance_prob = np.exp(-delta / temperature) if delta > 0 else 1
+
+                if delta < 0:
+                    current_distance = new_distance
+                else:
+                    if np.random.rand() < acceptance_prob:
+                        current_distance = new_distance
+                    else:
+                        self.board.tour_order = previous_tour[:]
+
+                # Save current state for visualization
+                self.board.order_tour()
+                self.all_tours.append(self.board.tour_order[:])
+                self.all_lengths.append(current_distance)
+                self.all_temperatures.append(temperature)
+                self.all_acceptance_probs.append(acceptance_prob)
+
+        self.board.order_tour()
+
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        print(f"Simulation took {elapsed_time:.2f} seconds.")
+
+        print("=========Simulated Annealing finished=========")
+        print(self.board)
+
+        if self.p.save_data:
+                self._save_data()
 
     def _save_data(self):
         """
@@ -141,17 +268,3 @@ class Solver:
         write_csv("all_acceptance_probs.csv", [[prob] for prob in self.all_acceptance_probs], params_header)
 
         print(f"Data saved to folder: {folder_path}")
-
-    def calculate_total_distance(self):
-        """
-        Calculate the total distance of the current tour.
-        post:
-        - Prints the total distance of the current tour.
-        """
-        print(f"Total distance: {self.board.calculate_tour_distance()}")
-
-    def calculate_total_distance_optimal(self):
-        """
-        Calculate the total distance of the optimal tour.
-        """
-        print(f"Optimal distance: {self.board.calculate_tour_solution_distance()}")
