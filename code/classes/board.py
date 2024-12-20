@@ -146,8 +146,8 @@ class Board:
         x1, y1 = Node1.x, Node1.y
         x2, y2 = Node2.x, Node2.y
         distance = m.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
-        distance_rounded = np.round(distance,0)
-        return distance_rounded
+        distance_rounded = np.round(distance)
+        return distance
 
     def calculate_tour_distance(self) -> float:
         """
